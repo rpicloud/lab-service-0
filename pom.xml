@@ -5,7 +5,7 @@
 
 	<groupId>com.rpicloud</groupId>
 	<artifactId>service-0</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
+	<version>0.0.1</version>
 	<packaging>jar</packaging>
 
 	<name>service-0</name>
@@ -101,6 +101,9 @@
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
+				<configuration>
+					<finalName>deployable-application</finalName>
+				</configuration>
 			</plugin>
 		</plugins>
 	</build>
