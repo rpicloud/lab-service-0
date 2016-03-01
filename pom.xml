@@ -5,7 +5,7 @@
 
 	<groupId>com.rpicloud</groupId>
 	<artifactId>service-0</artifactId>
-	<version>0.0.1</version>
+	<version>0.0.2</version>
 	<packaging>jar</packaging>
 
 	<name>service-0</name>
