@@ -84,20 +84,10 @@ public class Application {
 
 		Service1 service1 = Feign.builder()
 				.decoder(new JacksonDecoder())
-//				.target(Service1.class, "http://"+service1host+":"+service1port); TODO: Add config
-				.target(Service1.class, "http://localhost:9001");
+				.target(Service1.class, "http://"+service1host+":"+service1port);
 
 		// Fetch and print a list of the contributors to this library.
 		List<Resource1> resources = service1.resources();
-
-
-//		List<String> result = new ArrayList<>();
-
-		// Mapping to another type here (just string for now)
-//		for (Resource1 res : resources) {
-//			result.add(res.getData());
-//		}
-
 
 		return new ResponseEntity<List<Resource1>>(resources, HttpStatus.OK);
 	}
