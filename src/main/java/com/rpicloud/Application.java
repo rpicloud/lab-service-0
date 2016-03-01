@@ -1,16 +1,12 @@
 package com.rpicloud;
 
-import com.netflix.ribbon.proxy.annotation.Http;
+import com.rpicloud.interfaces.IService1;
 import com.rpicloud.models.Resource1;
 import feign.Feign;
-import feign.RequestLine;
-import feign.codec.Decoder;
-import feign.codec.ErrorDecoder;
 import feign.jackson.JacksonDecoder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.cloud.netflix.feign.support.SpringDecoder;
 import org.springframework.core.env.Environment;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -72,19 +68,12 @@ public class Application {
 	}
 
 
-	// Testing out Feign
-	//Interface without parameters
-	interface Service1 {
-		@RequestLine("GET /resources")
-		List<Resource1> resources();
-	}
-
 	@RequestMapping(value = "/request1")
 	public ResponseEntity<List<Resource1>> request1() {
 
-		Service1 service1 = Feign.builder()
+		IService1 service1 = Feign.builder()
 				.decoder(new JacksonDecoder())
-				.target(Service1.class, "http://"+service1host+":"+service1port);
+				.target(IService1.class, "http://"+service1host+":"+service1port);
 
 		// Fetch and print a list of the contributors to this library.
 		List<Resource1> resources = service1.resources();
