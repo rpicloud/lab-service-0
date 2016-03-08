@@ -7,6 +7,8 @@ import feign.jackson.JacksonDecoder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.cloud.client.circuitbreaker.EnableCircuitBreaker;
+import org.springframework.cloud.netflix.hystrix.dashboard.EnableHystrixDashboard;
 import org.springframework.core.env.Environment;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -19,6 +21,8 @@ import java.util.List;
 
 @SpringBootApplication
 @RestController
+@EnableCircuitBreaker
+@EnableHystrixDashboard
 public class Application {
 
 	private Boolean crash = false;
@@ -29,6 +33,7 @@ public class Application {
 	public static void main(String[] args) {
 		SpringApplication.run(Application.class, args);
 	}
+
 
 	@RequestMapping("/test")
 	public ResponseEntity<List<String>> tests() throws InterruptedException {
