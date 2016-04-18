@@ -65,11 +65,11 @@ public class Application {
 	@RequestMapping(value= "/timeout/{seconds}")
 	public String timeout(@PathVariable Integer seconds) throws InterruptedException {
 		if(sleep > 0){
-			Thread.sleep(sleep*1000);
+			Thread.sleep(sleep);
             sleep=0;
 		}
         sleep=seconds;
-		return "I'm gonna sleep for " + seconds + " seconds next time you call me!";
+		return "I'm gonna sleep for " + seconds + " ms next time you call me!";
 	}
 
 

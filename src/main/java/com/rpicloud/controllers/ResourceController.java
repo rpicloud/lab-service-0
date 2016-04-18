@@ -1,8 +1,10 @@
 package com.rpicloud.controllers;
 
+import com.netflix.config.ConfigurationManager;
 import com.netflix.hystrix.contrib.javanica.annotation.HystrixCommand;
 import com.rpicloud.interfaces.IService1;
 import com.rpicloud.models.Resource;
+import com.rpicloud.models.ServerState;
 import feign.Feign;
 import feign.jackson.JacksonDecoder;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,6 +13,7 @@ import org.springframework.core.env.Environment;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -26,8 +29,15 @@ public class ResourceController {
 
     private String service1host;
     private String service1port;
+    private ServerState state = new ServerState();
 
-    @HystrixCommand(fallbackMethod = "open")
+    @Autowired
+    void setEnvironment(Environment env){
+        service1host = env.getProperty("configuration.service1.host");
+        service1port = env.getProperty("configuration.service1.port");
+    }
+
+    @HystrixCommand(fallbackMethod = "open", commandKey = "resources")
     @RequestMapping("/resources")
     public ResponseEntity<List<Resource>> request1() {
 
@@ -48,16 +58,32 @@ public class ResourceController {
         return new ResponseEntity<List<Resource>>(list, HttpStatus.OK);
     }
 
-    @Autowired
-    void setEnvironment(Environment env){
-        service1host = env.getProperty("configuration.service1.host");
-        service1port = env.getProperty("configuration.service1.port");
+    // Enable/disable circuit breaker
+    @RequestMapping("/circuitbreaker/enabled/{enabled}")
+    public ResponseEntity<String> circuitbreaker(@PathVariable boolean enabled) {
+        ConfigurationManager.getConfigInstance().setProperty("hystrix.command.resources.circuitBreaker.enabled", enabled);
+        return new ResponseEntity<String>(enabled?"Enabled":"Disabled", HttpStatus.OK);
+    }
+
+    // Set timeout on circuit breaker
+    @RequestMapping("/circuitbreaker/timeout/{duration}")
+    public ResponseEntity<String> setTimeout(@PathVariable int duration){
+        ConfigurationManager.getConfigInstance().setProperty("hystrix.command.resources.execution.isolation.thread.timeoutInMilliseconds", duration);
+        return new ResponseEntity<String>("Duration in msec: " + duration, HttpStatus.OK);
+    }
+
+    // Enable/disable fallback
+    @RequestMapping("/fallbackenabled/{enabled}")
+    public ResponseEntity<String> fallback(@PathVariable boolean enabled) {
+        ConfigurationManager.getConfigInstance().setProperty("hystrix.command.resources.fallback.enabled", enabled);
+        return new ResponseEntity<String>(enabled?"Enabled":"Disabled", HttpStatus.OK);
     }
 
 
-    // From config?
-    @ConfigurationProperties(prefix = "hystrix", ignoreUnknownFields = true)
-    class HystrixProperties {
-        String enabled = "false";
+    @RequestMapping("/resultset/{amount}")
+    public String resultSet(@PathVariable int amount) {
+        state.setAmount(amount);
+        return "Amount: " + state.getAmount();
     }
+
 }
