@@ -1,7 +1,7 @@
 package com.rpicloud;
 
 import com.rpicloud.interfaces.IService1;
-import com.rpicloud.models.Resource1;
+import com.rpicloud.models.Resource;
 import feign.Feign;
 import feign.jackson.JacksonDecoder;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -74,16 +74,16 @@ public class Application {
 
 
 	@RequestMapping(value = "/request1")
-	public ResponseEntity<List<Resource1>> request1() {
+	public ResponseEntity<List<Resource>> request1() {
 
 		IService1 service1 = Feign.builder()
 				.decoder(new JacksonDecoder())
 				.target(IService1.class, "http://"+service1host+":"+service1port);
 
 		// Fetch and print a list of the contributors to this library.
-		List<Resource1> resources = service1.resources();
+		List<Resource> resources = service1.resources();
 
-		return new ResponseEntity<List<Resource1>>(resources, HttpStatus.OK);
+		return new ResponseEntity<List<Resource>>(resources, HttpStatus.OK);
 	}
 
 	@Autowired

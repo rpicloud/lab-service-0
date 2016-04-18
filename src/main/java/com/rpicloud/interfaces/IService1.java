@@ -1,6 +1,6 @@
 package com.rpicloud.interfaces;
 
-import com.rpicloud.models.Resource1;
+import com.rpicloud.models.Resource;
 import feign.RequestLine;
 
 import java.util.List;
@@ -10,5 +10,5 @@ import java.util.List;
  */
 public interface IService1 {
     @RequestLine("GET /resources")
-    List<Resource1> resources();
+    List<Resource> resources();
 }
