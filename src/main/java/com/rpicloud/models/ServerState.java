@@ -9,7 +9,7 @@ import java.util.ArrayList;
 public class ServerState {
 
     private String exception = null;
-    private int timeout = 0;
+    private int delay = 0;
     private int amount = 10;
 
 
@@ -23,9 +23,9 @@ public class ServerState {
     }
 
     public void invoke() throws Exception {
-        if(timeout != 0){
+        if(delay != 0){
             try {
-                Thread.sleep(timeout);
+                Thread.sleep(delay);
 
             }
             catch (InterruptedException e){
@@ -55,12 +55,12 @@ public class ServerState {
         this.exception = exception;
     }
 
-    public int getTimeout() {
-        return timeout;
+    public int getDelay() {
+        return delay;
     }
 
-    public void setTimeout(int timeout) {
-        this.timeout = timeout;
+    public void setDelay(int delay) {
+        this.delay = delay;
     }
 
     public ArrayList<Resource> getResources() {
