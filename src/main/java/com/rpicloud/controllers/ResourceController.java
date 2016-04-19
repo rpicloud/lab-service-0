@@ -55,7 +55,7 @@ public class ResourceController {
         List<Resource> list = new ArrayList<>();
         list.add(new Resource("Circuit is open!"));
 
-        return new ResponseEntity<List<Resource>>(list, HttpStatus.OK);
+        return new ResponseEntity<List<Resource>>(list, HttpStatus.PARTIAL_CONTENT);
     }
 
     // Enable/disable circuit breaker
