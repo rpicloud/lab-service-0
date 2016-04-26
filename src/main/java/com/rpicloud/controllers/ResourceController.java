@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.net.HttpURLConnection;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -35,6 +36,32 @@ public class ResourceController {
     void setEnvironment(Environment env){
         service1host = env.getProperty("configuration.service1.host");
         service1port = env.getProperty("configuration.service1.port");
+    }
+
+    // Calls service-1's endpoint without a circuit breaker in neither service-0 or service-1
+    @RequestMapping("/resources_nocb")
+    public ResponseEntity<List<Resource>> request_nocb() {
+        IService1 service1 = Feign.builder()
+                .decoder(new JacksonDecoder())
+                .target(IService1.class, "http://"+service1host+":"+service1port);
+
+        // Fetch and print a list of the contributors to this library.
+        List<Resource> resources = service1.resources_nocb();
+
+        return new ResponseEntity<List<Resource>>(resources, HttpStatus.OK);
+    }
+
+    // Calls service-1's endpoint without a circuit breaker in neither service-0 or service-1
+    @RequestMapping("/resources_onecb")
+    public ResponseEntity<List<Resource>> request_onecb() {
+        IService1 service1 = Feign.builder()
+                .decoder(new JacksonDecoder())
+                .target(IService1.class, "http://"+service1host+":"+service1port);
+
+        // Fetch and print a list of the contributors to this library.
+        List<Resource> resources = service1.resources();
+
+        return new ResponseEntity<List<Resource>>(resources, HttpStatus.OK);
     }
 
     @HystrixCommand(fallbackMethod = "open", commandKey = "resources")

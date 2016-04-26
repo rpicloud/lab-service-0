@@ -25,70 +25,8 @@ import java.util.List;
 @EnableHystrixDashboard
 public class Application {
 
-	private Boolean crash = false;
-	private Integer sleep = 0;
-	private String service1host;
-	private String service1port;
-
 	public static void main(String[] args) {
 		SpringApplication.run(Application.class, args);
 	}
 
-
-	@RequestMapping("/test")
-	public ResponseEntity<List<String>> tests() throws InterruptedException {
-		List<String> list = new ArrayList<>();
-		list.add("H");
-		list.add("e");
-		list.add("l");
-		list.add("l");
-		list.add("o");
-		if(crash){
-			throw new NullPointerException();
-		}
-		else if(sleep > 0){
-			Thread.sleep(sleep*1000);
-		}
-		return new ResponseEntity<List<String>>(list, HttpStatus.OK);
-	}
-
-	@RequestMapping("/crash")
-	public String crash(){
-		if(crash){
-            crash=false;
-			throw new NullPointerException();
-		}
-		crash=true;
-		return "I'm gonna crash next time you call me!";
-	}
-
-	@RequestMapping(value= "/timeout/{seconds}")
-	public String timeout(@PathVariable Integer seconds) throws InterruptedException {
-		if(sleep > 0){
-			Thread.sleep(sleep);
-            sleep=0;
-		}
-        sleep=seconds;
-		return "I'm gonna sleep for " + seconds + " ms next time you call me!";
-	}
-
-
-	@RequestMapping(value = "/request1")
-	public ResponseEntity<List<Resource>> request1() {
-
-		IService1 service1 = Feign.builder()
-				.decoder(new JacksonDecoder())
-				.target(IService1.class, "http://"+service1host+":"+service1port);
-
-		// Fetch and print a list of the contributors to this library.
-		List<Resource> resources = service1.resources();
-
-		return new ResponseEntity<List<Resource>>(resources, HttpStatus.OK);
-	}
-
-	@Autowired
-	void setEnvironment(Environment env){
-		service1host = env.getProperty("configuration.service1.host");
-		service1port = env.getProperty("configuration.service1.port");
-	}
 }

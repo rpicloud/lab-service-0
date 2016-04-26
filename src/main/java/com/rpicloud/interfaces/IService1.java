@@ -11,4 +11,7 @@ import java.util.List;
 public interface IService1 {
     @RequestLine("GET /resources")
     List<Resource> resources();
+
+    @RequestLine("GET /resources_nocb")
+    List<Resource> resources_nocb();
 }
